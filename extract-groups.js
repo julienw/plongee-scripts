@@ -40,7 +40,7 @@ function fixInputFile() {
   execFileSync("ftfy", ["-e", "latin-1", "-o", fixedInputFile, inputFile]);
 }
 
-console.log(outputDir);
+console.log(">>>>> Tout va être écrit dans:", outputDir);
 fixInputFile();
 for (const group of groups) {
   const groupId = groupIds[group];
