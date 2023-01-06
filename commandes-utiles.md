@@ -1,37 +1,22 @@
-# Commandes utiles pour gérer la liste des membres MASA
+# Commandes utiles pour gérer la liste des membres MASA avec Assoconnect
 
-## Récupérer le XML avec curl
-
-curl 'https://montrougeplongee.com/indexXML.php' -X POST --compressed  -H 'Cookie: PHPSESSID=<>' --data-raw 'what=users'
-
-## Fixer le XML avec ftfy
-
-ftfy -e latin-1 -o liste\ des\ membres-ftfy.xml liste\ des\ membres.xml
+L'export "excel" de Assoconnect est en fait un fichier XML, ce qui permet de le
+traiter avec xq. Dans cette petite doc, je garde quelques commandes utiles pour
+accéder aux données.
 
 ## Filtres xq
 
 `xq` est à installer avec `yq`
 
-### Tous les actifs
+### Extraire un workbook "xls" vers json
+```
+.Workbook.Worksheet.Table.Row | map(.Cell | map_values(.Data | .["#text"]))
+```
 
-.users.user | map(select(.statut == "2"))
+=> Organisé par ligne
 
-
-### Tous les pN1
-.users.user[] | select(.statut == "2" and (.groupes.groupe | [(.["@id"]? // .[]["@id"])] | index("5"))) | { nom, prenom, email, tel: (.mobile // .fixe) }
-
-### Tous les pN2
-.users.user[] | select(.statut == "2" and (.groupes.groupe | [(.["@id"]? // .[]["@id"])] | index("6"))) | { nom, prenom, email, tel: (.mobile // .fixe) }
-
-#### Générer un CSV
-
-[.nom, .prenom, .email, (.mobile // .fixe)]|@csv
-
-### Problèmes possibles
-#### Tous les actifs avec un seul groupe
-.users.user[] | select(.statut == "2") | select(.groupes.groupe | length <= 1) | { nom, prenom, tel: (.mobile // .fixe) }
-
-#### Tous les actifs sans téléphone
-
-.users.user[] | select(.statut == "2") | select(.mobile or .fixe | not) | { nom, prenom, tel: (.mobile // .fixe) }
+Pour organiser par colonne, on peut ajouter `| transpose`:
+```
+.Workbook.Worksheet.Table.Row | map(.Cell | map_values(.Data | .["#text"])) | transpose
+```
 
