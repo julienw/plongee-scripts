@@ -32,15 +32,43 @@ async function fetchAndSave({ nom, prenom, urlInformation, dir, what }) {
   }
 }
 
+function printUsage() {
+  console.log(`${process.argv[1]} <file to read> <output directory>`);
+  console.log("\nThis script will fetch the documents present in the export.");
+}
+
+const nodeVersion = process.versions.node;
+const nodeVersionMajor = nodeVersion.slice(0, nodeVersion.indexOf("."));
+if (nodeVersionMajor < 18) {
+  console.error(
+    `This script needs node v18. Your current version is ${nodeVersion}.`
+  );
+  printUsage();
+  process.exit(-1);
+}
+
 const fileToRead = process.argv[2];
 if (!fileToRead) {
   console.error("Please provide a file to read as the first argument");
+  printUsage();
+  process.exit(-1);
+}
+
+if (fileToRead === "-h" || fileToRead === "--help") {
+  printUsage();
+  process.exit(0);
+}
+
+if (fileToRead.startsWith("-")) {
+  console.error("No option is accepted besides -h or --help");
+  printUsage();
   process.exit(-1);
 }
 
 const directoryToWrite = process.argv[3];
 if (!directoryToWrite) {
   console.error("Please provide a directory name to write to");
+  printUsage();
   process.exit(-1);
 }
 

@@ -20,3 +20,19 @@ Pour organiser par colonne, on peut ajouter `| transpose`:
 .Workbook.Worksheet.Table.Row | map(.Cell | map_values(.Data | .["#text"])) | transpose
 ```
 
+## Scripts node
+
+Ces scripts nécessitent node v18. Installer les dépendances avec la commande
+`npm ci`.
+
+Ils prennent tous pour input l'export excel 97 de assoconnect.
+
+### output-json.js
+
+Ce script parse l'export pour mettre en forme un json manipulable plus
+facilement.
+
+### fetch-documents.js
+
+Ce script va télécharger les documents des personnes qui font parties de
+l'export.
