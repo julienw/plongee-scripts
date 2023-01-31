@@ -62,22 +62,50 @@ function filterResults(results, date) {
 }
 
 function printHelp() {
-  console.log("check-availability.js <date>");
+  console.log("check-availability.js [-q] <date>");
+  console.log("  -q     Quiet: no console output");
+  console.log("  date   A date in the format YYYY-MM-DD");
 }
 
-if (process.argv.length <= 2) {
+function possiblyLog(...args) {
+  if (!quiet) {
+    console.log(...args);
+  }
+}
+
+const [, , ...args] = process.argv;
+let date = null;
+let quiet = null;
+while (date === null) {
+  const arg = args.shift();
+  if (!arg) {
+    break;
+  }
+  if (arg.startsWith("-")) {
+    if (arg === "-q") {
+      quiet = true;
+    } else {
+      console.log(`Unknown argument ${arg}`);
+      printHelp();
+      process.exit(1);
+    }
+  } else {
+    date = arg;
+  }
+}
+
+if (date === null) {
   console.log("Not enough arguments.");
   printHelp();
   process.exit(1);
 }
 
-const date = process.argv[2];
 const sessionId = await startSession();
 const results = await fetchInformationFromAqua92WebsiteForDate(sessionId, date);
 const filteredResults = filterResults(results, date);
 if (filteredResults.length) {
-  console.log(...filteredResults);
+  possiblyLog(...filteredResults);
 } else {
-  console.log("No result");
+  possiblyLog("No result");
   process.exit(255);
 }
