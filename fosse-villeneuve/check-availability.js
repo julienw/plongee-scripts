@@ -2,6 +2,13 @@
 /* Spécifier la date voulue en premier argument, sous la forme de
  * YEAR-MONTH-DAY, par exemple 2023-04-02
  * Le script terminera avec le status 255 s'il n'y a aucun résultat.
+ *
+ * S'utilise en cron de cette manière par exemple:
+```
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+
+0 10,13,18 * * * /<path to node>/node /<path to script>/check-availability.js -q <target date> && notify-send "Les créneaux de fosse sont ouverts !"
+```
  */
 
 async function startSession() {
