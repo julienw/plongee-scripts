@@ -58,7 +58,9 @@ async function fetchInformationFromAqua92WebsiteForDate(sessionId, date) {
   }
 
   const json = await response.json();
-  return json.ressource[0].typeResa[24].access.map(({ from, to }) => ({
+  const ressource = json.ressource[0];
+  const entryForPlongee = ressource.typeResa.find((resa) => resa.id === "4");
+  return entryForPlongee.access.map(({ from, to }) => ({
     from: new Date(from),
     to: new Date(to),
   }));
@@ -111,7 +113,7 @@ const sessionId = await startSession();
 const results = await fetchInformationFromAqua92WebsiteForDate(sessionId, date);
 const filteredResults = filterResults(results, date);
 if (filteredResults.length) {
-  possiblyLog(...filteredResults);
+  possiblyLog(filteredResults);
 } else {
   possiblyLog("No result");
   process.exit(255);
