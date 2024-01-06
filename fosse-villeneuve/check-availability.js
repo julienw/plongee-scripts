@@ -9,6 +9,7 @@ DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 
 0 10,13,18 * * * /<path to node>/node /<path to script>/check-availability.js -q <target date> && notify-send "Les créneaux de fosse sont ouverts !"
 ```
+ * "target date" est au format YYYY-MM-DD
  */
 
 async function startSession() {
